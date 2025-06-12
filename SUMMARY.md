@@ -30,9 +30,8 @@
    - Implement core functionality
    - Add more tests
 
-3. Set up CI/CD with GitHub Actions
-   - Add workflow for running tests
-   - Add workflow for code style checks
+   3. ✅ Set up CI/CD with GitHub Actions
+   - Added workflow for running tests
 
 4. Publish package
    - Register on Packagist
