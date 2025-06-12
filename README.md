@@ -101,6 +101,9 @@ $result = $linode->databases()->mysql()->delete(123);
 
 // Suspend a MySQL database
 $result = $linode->databases()->mysql()->suspend(123);
+
+// Resume a suspended MySQL database
+$result = $linode->databases()->mysql()->resume(123);
 ```
 
 > **Note:** You must select a database engine (mysql or postgresql) before performing operations. Attempting operations without selecting an engine will throw an exception.

@@ -182,24 +182,41 @@ it('can suspend a mysql database', function () {
     $databaseId = 123;
 
     Http::fake([
-        "https://api.linode.com/v4/databases/mysql/instances/{$databaseId}/suspend" => Http::response([
-            'id' => $databaseId,
-            'status' => 'suspended',
-            // other fields...
-        ], 200),
+        "https://api.linode.com/v4/databases/mysql/instances/{$databaseId}/suspend" => Http::response([], 200),
     ]);
 
     $linode = app(LinodeClient::class);
     $result = $linode->databases()->mysql()->suspend($databaseId);
 
     expect($result)->toBeArray()
-        ->and($result)->toHaveKey('status', 'suspended');
+        ->and($result)->toBeEmpty();
 });
 
 it('throws an exception when suspending a database without selecting an engine', function () {
     $linode = app(LinodeClient::class);
 
     expect(fn() => $linode->databases()->suspend(123))
+        ->toThrow(\Exception::class, 'Database engine not selected');
+});
+
+it('can resume a mysql database', function () {
+    $databaseId = 123;
+
+    Http::fake([
+        "https://api.linode.com/v4/databases/mysql/instances/{$databaseId}/resume" => Http::response([], 200),
+    ]);
+
+    $linode = app(LinodeClient::class);
+    $result = $linode->databases()->mysql()->resume($databaseId);
+
+    expect($result)->toBeArray()
+        ->and($result)->toBeEmpty();
+});
+
+it('throws an exception when resuming a database without selecting an engine', function () {
+    $linode = app(LinodeClient::class);
+
+    expect(fn() => $linode->databases()->resume(123))
         ->toThrow(\Exception::class, 'Database engine not selected');
 });
 

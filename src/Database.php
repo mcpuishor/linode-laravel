@@ -76,4 +76,13 @@ class Database
 
         return $this->transport->post($this->endpoint . '/' . $instanceId . '/suspend');
     }
+
+    public function resume(int $instanceId): array
+    {
+        if (!$this->engineSelected) {
+            throw new \Exception('Database engine not selected');
+        }
+
+        return $this->transport->post($this->endpoint . '/' . $instanceId . '/resume');
+    }
 }
