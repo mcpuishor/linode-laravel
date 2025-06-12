@@ -30,19 +30,57 @@ LINODE_API_KEY=your-api-key
 
 ## Usage
 
+There are two ways to get the LinodeClient instance:
+
 ```php
-// Basic usage example
+// Method 1: Using the static make() method
+$linode = \Mcpuishor\LinodeLaravel\LinodeClient::make();
+
+// Method 2: Resolving from the container
+$linode = app(\Mcpuishor\LinodeLaravel\LinodeClient::class);
+```
+
+### Working with Instances
+
+```php
+// Get all instances
+$instances = $linode->instances()->all();
+
+// Get a specific instance by ID
+$instance = $linode->instances()->get(123);
+
+// Create a new instance
+$newInstance = $linode->instances()->create([
+    'label' => 'my-new-instance',
+    'region' => 'us-east',
+    'type' => 'g6-standard-1',
+    'image' => 'linode/ubuntu22.04',
+]);
+
+// Update an instance
+$updatedInstance = $linode->instances()->update(123, [
+    'label' => 'updated-instance',
+    'region' => 'us-west',
+]);
+
+// Delete an instance
+$result = $linode->instances()->delete(123);
+```
+
+### Database Support
+
+> **Note:** Database functionality is planned but not yet implemented in the current version.
+
+### Advanced Usage
+
+If you need more direct access to the Linode API, you can use the Transport class:
+
+```php
+// Get the Transport instance
 $transport = app(\Mcpuishor\LinodeLaravel\Transport::class);
 
-// Get all Linodes
-$linodes = $transport->get('linodes');
-
-// Create a new Linode
-$newLinode = $transport->post('linodes', [
-    'type' => 'g6-standard-1',
-    'region' => 'us-east',
-    'label' => 'my-new-linode'
-]);
+// Make a custom API request
+$result = $transport->get('some/endpoint');
 ```
 
 ## Testing
