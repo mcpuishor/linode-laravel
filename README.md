@@ -69,7 +69,41 @@ $result = $linode->instances()->delete(123);
 
 ### Database Support
 
-> **Note:** Database functionality is planned but not yet implemented in the current version.
+```php
+// Get all databases
+$databases = $linode->databases()->all();
+
+// You must select a database engine (MySQL or PostgreSQL) before performing operations
+// Get a specific MySQL database by ID
+$database = $linode->databases()->mysql()->get(123);
+
+// Get a specific PostgreSQL database by ID
+$database = $linode->databases()->postgresql()->get(123);
+
+// Create a new MySQL database
+$newDatabase = $linode->databases()->mysql()->create([
+    'label' => 'my-new-database',
+    'region' => 'us-east',
+    'type' => 'g6-standard-1',
+    'engine_version' => '8.0.26',
+    'cluster_size' => 3,
+    'encrypted' => true,
+]);
+
+// Update a MySQL database
+$updatedDatabase = $linode->databases()->mysql()->update(123, [
+    'label' => 'updated-database',
+    'allow_list' => ['192.0.2.1/32'],
+]);
+
+// Delete a MySQL database
+$result = $linode->databases()->mysql()->delete(123);
+
+// Suspend a MySQL database
+$result = $linode->databases()->mysql()->suspend(123);
+```
+
+> **Note:** You must select a database engine (mysql or postgresql) before performing operations. Attempting operations without selecting an engine will throw an exception.
 
 ### Advanced Usage
 
