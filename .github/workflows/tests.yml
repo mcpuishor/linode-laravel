@@ -5,6 +5,7 @@ on:
     branches: [ main, develop ]
   pull_request:
     branches: [ main, develop ]
+  workflow_dispatch:
 
 jobs:
   test:
@@ -49,7 +50,7 @@ jobs:
       - name: Execute tests
         run: vendor/bin/pest --colors=always
 
-              - name: Upload coverage reports
+      - name: Upload coverage reports
         if: ${{ matrix.dependency-version == 'prefer-stable' }}
         uses: codecov/codecov-action@v3
         with:
