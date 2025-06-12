@@ -12,6 +12,7 @@
 */
 
 uses(Mcpuishor\LinodeLaravel\Tests\TestCase::class)->in('Feature');
+uses(Mcpuishor\LinodeLaravel\Tests\TestCase::class)->in('Unit');
 
 /*
 |--------------------------------------------------------------------------
@@ -39,7 +40,11 @@ expect()->extend('toBeOne', function () {
 |
 */
 
-function something()
-{
-    // ..
+function config_for_testing() {
+    return [
+        'linode.api_key' => 'test-api-key',
+        'linode.api_url' => 'https://api.linode.com',
+        'linode.api_version' => 'v4',
+        'linode.timeout' => 30,
+    ];
 }

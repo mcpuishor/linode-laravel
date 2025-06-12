@@ -15,6 +15,18 @@ class LinodeLaravelServiceProvider extends ServiceProvider
         $this->mergeConfigFrom(
             __DIR__.'/../config/linode.php', 'linode'
         );
+
+        // Register Transport
+        $this->app->singleton(Transport::class, function ($app) {
+            return new Transport();
+        });
+
+        // Register LinodeClient#
+        $this->app->singleton(LinodeClient::class, function ($app) {
+            return new LinodeClient(
+                app()->make(Transport::class)
+            );
+        });
     }
 
     /**

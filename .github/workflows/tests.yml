@@ -31,7 +31,7 @@ jobs:
         with:
           php-version: ${{ matrix.php }}
           extensions: dom, curl, libxml, mbstring, zip, pcntl, pdo, sqlite, pdo_sqlite, bcmath, soap, intl, gd, exif, iconv, imagick, fileinfo
-          coverage: none
+          coverage: xdebug
 
       - name: Setup problem matchers
         run: |
@@ -47,4 +47,12 @@ jobs:
         run: composer show -D
 
       - name: Execute tests
-        run: vendor/bin/pest --colors=always --verbose
+        run: vendor/bin/pest --colors=always
+
+              - name: Upload coverage reports
+        if: ${{ matrix.dependency-version == 'prefer-stable' }}
+        uses: codecov/codecov-action@v3
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+          files: ./build/logs/clover.xml
+          fail_ci_if_error: true

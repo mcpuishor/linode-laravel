@@ -30,7 +30,16 @@
         }
     },
     "scripts": {
-        "test": "pest"
+        "test": "./run-tests.sh",
+        "test:unit": "./run-tests.sh --testsuite=Unit",
+        "test:feature": "./run-tests.sh --testsuite=Feature",
+        "test:coverage": "./run-tests.sh --coverage --min=80"
+    },
+    "scripts-descriptions": {
+        "test": "Run all tests",
+        "test:unit": "Run only unit tests",
+        "test:feature": "Run only feature tests",
+        "test:coverage": "Run all tests with coverage report"
     },
     "extra": {
         "laravel": {

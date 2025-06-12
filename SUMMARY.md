@@ -13,6 +13,7 @@
    - Created Pest.php configuration
    - Created TestCase.php for Laravel integration
    - Added a sample test for configuration
+   - Added PHPUnit configuration for test coverage and reporting
 
 3. ✅ Initialized Git repository
    - Created .gitignore file
@@ -44,15 +45,23 @@ linode-laravel/
 ├── config/
 │   └── linode.php
 ├── src/
-│   └── LinodeLaravelServiceProvider.php
+│   ├── Exceptions/
+│   │   └── LinodeApiException.php
+│   ├── LinodeLaravelServiceProvider.php
+│   └── Transport.php
 ├── tests/
 │   ├── Feature/
-│   │   └── ConfigTest.php
+│   │   ├── ConfigTest.php
+│   │   └── LinodeApiExceptionTest.php
+│   ├── Unit/
+│   │   └── TransportTest.php
 │   ├── Pest.php
 │   └── TestCase.php
 ├── .gitignore
+├── CONTRIBUTING.md
 ├── composer.json
 ├── LICENSE.md
+├── phpunit.xml
 ├── README.md
 └── GITHUB_SETUP.md
 ```
