@@ -1,61 +1,59 @@
 <?php
 namespace Mcpuishor\LinodeLaravel;
 
+use Illuminate\Support\Collection;
 use Mcpuishor\LinodeLaravel\Exceptions\LinodeApiException;
 
 class Instances
 {
     protected Transport $transport;
-    const ENDPOINT = 'linode/instances';
+    protected $endpoint = 'linode/instances';
 
     public function __construct(Transport $transport)
     {
         $this->transport = $transport;
     }
 
-    public function all()
+    public function all(): Collection
     {
-        $result = $this->transport->get(self::ENDPOINT);
-        return collect($result['data'] ?? []);
+        $result = $this->transport->get($this->endpoint);
+
+        return collect($result['data'] ?? [])->map(function ($item) {
+            return ValueObject::fromArray($item);
+        });
     }
 
-    public function get(int $instanceId): array
+    public function get(int $instanceId): ValueObject
     {
-        $result = $this->transport->get(self::ENDPOINT . '/' . $instanceId);
+        $result = $this->transport->get($this->endpoint . '/' . $instanceId);
 
-        if (!$result) {
-            throw new \Exception('Instance not found');
-        }
-
-        return $result;
+        return $result
+            ? ValueObject::fromArray($result)
+            : throw new \Exception('Instance not found');
     }
 
-    public function create(array $data): array
+    public function create(array $data): ValueObject
     {
-        $result = $this->transport->post(self::ENDPOINT, $data);
+        $result = $this->transport->post($this->endpoint, $data);
 
-        if (!$result) {
-            throw new \Exception('Failed to create instance');
-        }
-
-        return $result;
+        return $result
+            ? ValueObject::fromArray($result)
+            : throw new \Exception('Failed to create instance');
     }
 
-    public function update(int $instanceId, array $data): array
+    public function update(int $instanceId, array $data): ValueObject
     {
-        $result = $this->transport->put(self::ENDPOINT . '/' . $instanceId, $data);
+        $result = $this->transport->put($this->endpoint . '/' . $instanceId, $data);
 
-        if (!$result) {
-            throw new \Exception('Failed to update instance');
-        }
-
-        return $result;
+        return $result
+            ? ValueObject::fromArray($result)
+            : throw new \Exception('Failed to update instance');
     }
 
     public function delete(int $instanceId): bool
     {
-      $this->transport->delete(self::ENDPOINT . '/' . $instanceId);
+      $result = $this->transport->delete($this->endpoint . '/' . $instanceId);
 
-      return true;
+      return $result === [];
     }
 }
