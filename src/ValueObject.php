@@ -22,6 +22,10 @@ final readonly class ValueObject implements Jsonable
         return $this->attributes[$name] ?? null;
     }
 
+    public function toArray(): array
+    {
+        return $this->attributes;
+    }
     public function toJson($options = 0): string
     {
         return json_encode($this->attributes, $options);

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Http;
 use Mcpuishor\LinodeLaravel\Exceptions\LinodeApiException;
 use Mcpuishor\LinodeLaravel\Instances;
 use Mcpuishor\LinodeLaravel\LinodeClient;
+use Mcpuishor\LinodeLaravel\ValueObject;
 
 beforeEach(function () {
     config(config_for_testing());
@@ -36,16 +37,16 @@ it('can get all the instances', function () {
 
     expect($instances)->toBeCollection()
         ->and($instances)->toHaveCount(1)
-        ->and($instances->first())->toBeArray()
-        ->and($instances->first())->toHaveKeys([
-            'id', 'label', 'status', 'created', 'updated', 'region', 'type',
-            'ipv4', 'ipv6', 'image', 'specs', 'backups', 'tags'
+        ->and($instances->first())->toBeInstanceOf(ValueObject::class)
+        ->and($instances->first()->toArray())->toHaveKeys([
+            'alerts', 'backups', 'capabilities', 'created', 'id', 'image', 'ipv4', 'ipv6',
+            'label', 'region', 'specs', 'status', 'tags', 'type', 'updated', 'watchdog_enabled'
         ]);
 });
 
 it('can get an instance', function () {
     $predefinedResponse = json_decode(file_get_contents(__DIR__ .'/../Fixtures/linode-instances.json'), true);
-    $predefinedResponse = $predefinedResponse['data'][0];
+    $predefinedResponse = $predefinedResponse[0];
 
     Http::fake([
         'https://api.linode.com/v4/linode/instances/123' => Http::response($predefinedResponse, 200),
@@ -54,8 +55,8 @@ it('can get an instance', function () {
     $linode = app(LinodeClient::class);
     $instance = $linode->instances()->get(123);
 
-    expect($instance)->toBeArray()
-        ->and($instance)->toHaveKeys([
+    expect($instance)->tobeInstanceOf(ValueObject::class)
+        ->and($instance->toArray())->toHaveKeys([
             'id', 'label', 'status', 'created', 'updated', 'region', 'type',
             'ipv4', 'ipv6', 'image', 'specs', 'backups', 'tags'
         ]);
@@ -83,8 +84,8 @@ it('can create an instance', function () {
     $linode = app(LinodeClient::class);
     $instance = $linode->instances()->create($data);
 
-    expect($instance)->toBeArray()
-        ->and($instance)->toHaveKeys(['id', 'label', 'region', 'type', 'image']);
+    expect($instance)->tobeInstanceOf(ValueObject::class)
+        ->and($instance->toArray())->toHaveKeys(['id', 'label', 'region', 'type', 'image']);
 });
 
 it('can update an instance', function () {
@@ -106,8 +107,8 @@ it('can update an instance', function () {
     $linode = app(LinodeClient::class);
     $instance = $linode->instances()->update($instanceId, $data);
 
-    expect($instance)->toBeArray()
-        ->and($instance)->toHaveKeys(['id', 'label', 'region']);
+    expect($instance)->toBeInstanceOf(ValueObject::class)
+        ->and($instance->toArray())->toHaveKeys(['id', 'label', 'region']);
 });
 
 it('can delete an instance', function () {

@@ -1,5 +1,4 @@
-{
-  "data": [
+[
     {
       "allow_list": [
         "192.0.2.202/24",
@@ -43,8 +42,4 @@
       "used_disk_size_gb": 2,
       "version": "8.0.26"
     }
-  ],
-  "page": 1,
-  "pages": 1,
-  "results": 1
-}
+]

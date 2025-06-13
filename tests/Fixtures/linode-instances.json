@@ -1,5 +1,4 @@
-{
-  "data": [
+[
     {
       "alerts": {
         "cpu": 180,
@@ -59,8 +58,4 @@
       "updated": "2018-01-01T00:01:01",
       "watchdog_enabled": true
     }
-  ],
-  "page": 1,
-  "pages": 1,
-  "results": 1
-}
+  ]

@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Http;
 use Mcpuishor\LinodeLaravel\Exceptions\LinodeApiException;
 use Mcpuishor\LinodeLaravel\Database;
 use Mcpuishor\LinodeLaravel\LinodeClient;
+use Mcpuishor\LinodeLaravel\ValueObject;
 
 beforeEach(function () {
     config(config_for_testing());
@@ -36,8 +37,8 @@ it('can get all the databases', function () {
 
     expect($databases)->toBeCollection()
         ->and($databases)->toHaveCount(1)
-        ->and($databases->first())->toBeArray()
-        ->and($databases->first())->toHaveKeys([
+        ->and($databases->first())->tobeInstanceOf(ValueObject::class)
+        ->and($databases->first()->toArray())->toHaveKeys([
             'id', 'label', 'status', 'created', 'updated', 'region', 'engine',
             'version', 'type', 'cluster_size', 'encrypted'
         ]);
@@ -45,7 +46,7 @@ it('can get all the databases', function () {
 
 it('can get a mysql database', function () {
     $predefinedResponse = json_decode(file_get_contents(__DIR__ .'/../Fixtures/linode-databases.json'), true);
-    $predefinedResponse = $predefinedResponse['data'][0];
+    $predefinedResponse = $predefinedResponse[0];
 
     Http::fake([
         'https://api.linode.com/v4/databases/mysql/instances/123' => Http::response($predefinedResponse, 200),
@@ -54,8 +55,8 @@ it('can get a mysql database', function () {
     $linode = app(LinodeClient::class);
     $database = $linode->databases()->mysql()->get(123);
 
-    expect($database)->toBeArray()
-        ->and($database)->toHaveKeys([
+    expect($database)->toBeInstanceOf(ValueObject::class)
+        ->and($database->toArray())->toHaveKeys([
             'id', 'label', 'status', 'created', 'updated', 'region', 'engine',
             'version', 'type', 'cluster_size', 'encrypted'
         ]);
@@ -63,7 +64,7 @@ it('can get a mysql database', function () {
 
 it('can get a postgresql database', function () {
     $predefinedResponse = json_decode(file_get_contents(__DIR__ .'/../Fixtures/linode-databases.json'), true);
-    $predefinedResponse = $predefinedResponse['data'][0];
+    $predefinedResponse = $predefinedResponse[0];
     $predefinedResponse['engine'] = 'postgresql';
 
     Http::fake([
@@ -73,8 +74,8 @@ it('can get a postgresql database', function () {
     $linode = app(LinodeClient::class);
     $database = $linode->databases()->postgresql()->get(123);
 
-    expect($database)->toBeArray()
-        ->and($database)->toHaveKeys([
+    expect($database)->tobeInstanceOf(ValueObject::class)
+        ->and($database->toArray())->toHaveKeys([
             'id', 'label', 'status', 'created', 'updated', 'region', 'engine',
             'version', 'type', 'cluster_size', 'encrypted'
         ]);
@@ -84,7 +85,7 @@ it('throws an exception when getting a database without selecting an engine', fu
     $linode = app(LinodeClient::class);
 
     expect(fn() => $linode->databases()->get(123))
-        ->toThrow(\Exception::class, 'Database engine not selected');
+        ->toThrow(\Exception::class, 'Linode API request failed');
 });
 
 it('can create a mysql database', function () {
@@ -114,8 +115,8 @@ it('can create a mysql database', function () {
     $linode = app(LinodeClient::class);
     $database = $linode->databases()->mysql()->create($data);
 
-    expect($database)->toBeArray()
-        ->and($database)->toHaveKeys(['id', 'label', 'region', 'type', 'engine', 'version', 'cluster_size', 'encrypted']);
+    expect($database)->tobeInstanceOf(ValueObject::class)
+        ->and($database->toArray())->toHaveKeys(['id', 'label', 'region', 'type', 'engine', 'version', 'cluster_size', 'encrypted']);
 });
 
 it('throws an exception when creating a database without selecting an engine', function () {
@@ -146,8 +147,8 @@ it('can update a mysql database', function () {
     $linode = app(LinodeClient::class);
     $database = $linode->databases()->mysql()->update($databaseId, $data);
 
-    expect($database)->toBeArray()
-        ->and($database)->toHaveKeys(['id', 'label', 'allow_list', 'engine']);
+    expect($database)->toBeInstanceOf(ValueObject::class)
+        ->and($database->toArray())->toHaveKeys(['id', 'label', 'allow_list', 'engine']);
 });
 
 it('throws an exception when updating a database without selecting an engine', function () {
@@ -168,7 +169,7 @@ it('can delete a mysql database', function () {
     $linode = app(LinodeClient::class);
     $result = $linode->databases()->mysql()->delete($databaseId);
 
-    expect($result)->toBeArray();
+    expect($result)->toBeTrue();
 });
 
 it('throws an exception when deleting a database without selecting an engine', function () {
@@ -188,8 +189,7 @@ it('can suspend a mysql database', function () {
     $linode = app(LinodeClient::class);
     $result = $linode->databases()->mysql()->suspend($databaseId);
 
-    expect($result)->toBeArray()
-        ->and($result)->toBeEmpty();
+    expect($result)->toBeTrue();
 });
 
 it('throws an exception when suspending a database without selecting an engine', function () {
@@ -209,8 +209,7 @@ it('can resume a mysql database', function () {
     $linode = app(LinodeClient::class);
     $result = $linode->databases()->mysql()->resume($databaseId);
 
-    expect($result)->toBeArray()
-        ->and($result)->toBeEmpty();
+    expect($result)->toBeTrue();
 });
 
 it('throws an exception when resuming a database without selecting an engine', function () {
