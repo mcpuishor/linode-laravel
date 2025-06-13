@@ -16,8 +16,7 @@ class Instances
     public function all()
     {
         $result = $this->transport->get(self::ENDPOINT);
-
-        return collect($result['data']['data'] ?? []);
+        return collect($result['data'] ?? []);
     }
 
     public function get(int $instanceId): array

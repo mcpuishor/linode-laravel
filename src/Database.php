@@ -31,7 +31,7 @@ class Database
     {
         $result = $this->transport->get($this->endpoint);
 
-        return collect($result['data']['data'] ?? []);
+        return collect($result['data'] ?? []);
     }
 
     public function get(int $instanceId): array
