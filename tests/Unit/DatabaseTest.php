@@ -85,7 +85,7 @@ it('throws an exception when getting a database without selecting an engine', fu
     $linode = app(LinodeClient::class);
 
     expect(fn() => $linode->databases()->get(123))
-        ->toThrow(\Exception::class, 'Linode API request failed');
+        ->toThrow(\Exception::class, 'Database engine not selected');
 });
 
 it('can create a mysql database', function () {
@@ -231,3 +231,62 @@ it('throws an api exception if database not found', function () {
     expect(fn() => $linode->databases()->mysql()->get($databaseId))
         ->toThrow(LinodeApiException::class, 'Linode API request failed');
 });
+
+describe('Database Credentials', function () {
+    it('can get credentials for a mysql database', function () {
+        $databaseId = 123;
+        $credentials = [
+            'username' => 'linroot',
+            'password' => 'someSecurePassword123!',
+        ];
+
+        Http::fake([
+            "https://api.linode.com/v4/databases/mysql/instances/{$databaseId}/credentials" => Http::response($credentials, 200),
+        ]);
+
+        $linode = app(LinodeClient::class);
+        $result = $linode->databases()->mysql()->getCredentials($databaseId);
+
+        expect($result)->toBeInstanceOf(ValueObject::class)
+            ->and($result->toArray())->toHaveKeys([
+                'username', 'password'
+            ]);
+    });
+
+    it('throws an exception when getting credentials without selecting an engine', function () {
+        $linode = app(LinodeClient::class);
+
+        expect(fn() => $linode->databases()->getCredentials(123))
+            ->toThrow(\Exception::class, 'Database engine not selected');
+    });
+
+    it('can reset credentials for a mysql database', function () {
+        $databaseId = 123;
+        $newCredentials = [
+            'username' => 'linroot',
+            'password' => 'newSecurePassword456!',
+        ];
+
+        Http::fake([
+            "https://api.linode.com/v4/databases/mysql/instances/{$databaseId}/credentials/reset" => Http::response([], 200),
+            "https://api.linode.com/v4/databases/mysql/instances/{$databaseId}/credentials" => Http::response($newCredentials, 200),
+        ]);
+
+        $linode = app(LinodeClient::class);
+        $result = $linode->databases()->mysql()->resetCredentials($databaseId);
+
+        expect($result)->toBeInstanceOf(ValueObject::class)
+            ->and($result->toArray())->toHaveKeys([
+                'username', 'password'
+            ])
+            ->and($result->password)->toBe('newSecurePassword456!');
+    });
+
+    it('throws an exception when resetting credentials without selecting an engine', function () {
+        $linode = app(LinodeClient::class);
+
+        expect(fn() => $linode->databases()->resetCredentials(123))
+            ->toThrow(\Exception::class, 'Database engine not selected');
+    });
+});
+

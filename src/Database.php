@@ -40,23 +40,21 @@ class Database
 
     public function get(int $instanceId): ValueObject
     {
-        $result = $this->transport->get($this->endpoint . '/' . $instanceId);
-
         return $this->engineSelected
-            ? ValueObject::fromArray($result)
+            ? ValueObject::fromArray(
+                $this->transport->get($this->endpoint . '/' . $instanceId)
+            )
             : throw new \Exception('Database engine not selected');
     }
 
     public function create(array $data): ValueObject
     {
-        if (!$this->engineSelected) {
-            throw new \Exception('Database engine not selected');
-        }
-        $result = $this->transport->post($this->endpoint, $data);
-
-        return $result
-            ? ValueObject::fromArray($result)
-            : throw new \Exception('Failed to create database');
+        return $this->engineSelected
+            ? ValueObject::fromArray(
+                $this->transport->post($this->endpoint, $data)
+                ?? throw new \Exception('Database could not be created')
+                )
+            : throw new \Exception('Database engine not selected');
     }
 
     public function delete(int $instanceId): bool
@@ -97,5 +95,22 @@ class Database
         $result =  $this->transport->post($this->endpoint . '/' . $instanceId . '/resume');
 
         return $result === [];
+    }
+
+    public function getCredentials(int  $instanceId): ValueObject
+    {
+        return $this->engineSelected
+            ?  ValueObject::fromArray( $this->transport->get($this->endpoint .'/' .  $instanceId . '/credentials'))
+            : throw new \Exception('Database engine not selected');
+    }
+
+    public function resetCredentials(int $instanceId): ValueObject
+    {
+        if (!$this->engineSelected) {
+            throw new \Exception('Database engine not selected');
+        }
+
+        $this->transport->put($this->endpoint . '/' . $instanceId . '/credentials/reset');
+        return $this->getCredentials($instanceId);
     }
 }
