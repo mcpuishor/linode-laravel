@@ -1,6 +1,8 @@
 # Linode Laravel
 
-A Laravel 12 package for Linode integration.
+A Laravel 12 package for Linode integration. For now, only Compute Instances and Managed Databases are supported. 
+
+Other features may be added in the future. 
 
 [![Tests](https://github.com/mcpuishor/linode-laravel/actions/workflows/tests.yml/badge.svg)](https://github.com/mcpuishor/linode-laravel/actions/workflows/tests.yml)
 
