@@ -29,13 +29,25 @@ class Database
         return $this;
     }
 
+    public function types(): Collection
+    {
+        $result = $this->transport->get($this->endpoint . '/types');
+
+        return $this->mapToValueObjectsCollection($result['data'] ?? []);
+    }
+
+    public function type(string $typeId): ValueObject
+    {
+        $result = $this->transport->get($this->endpoint . '/types/' . $typeId);
+
+        return ValueObject::fromArray($result['data'] ?? []);
+    }
+
     public function all(): Collection
     {
         $result = $this->transport->get($this->endpoint);
 
-        return collect($result['data'] ?? [])->map(function ($item) {
-            return ValueObject::fromArray($item);
-        });
+        return $this->mapToValueObjectsCollection($result['data'] ?? []);
     }
 
     public function get(int $instanceId): ValueObject
@@ -112,5 +124,21 @@ class Database
 
         $this->transport->put($this->endpoint . '/' . $instanceId . '/credentials/reset');
         return $this->getCredentials($instanceId);
+    }
+
+    public function ssl(): ValueObject
+    {
+        return $this->engineSelected
+            ? ValueObject::fromArray(
+                $this->transport->get($this->endpoint . '/ssl')
+            )
+            : throw new \Exception('Database engine not selected');
+    }
+
+    private function mapToValueObjectsCollection(array $data): Collection
+    {
+        return collect($data)->map(function ($item) {
+            return ValueObject::fromArray($item);
+        });
     }
 }
