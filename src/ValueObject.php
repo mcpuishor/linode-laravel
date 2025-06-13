@@ -17,13 +17,20 @@ final readonly class ValueObject implements Jsonable
         return new self($data);
     }
 
+    protected function isAssoc(array $arr): bool
+    {
+        return array_keys($arr) !== range(0, count($arr) - 1);
+    }
+
     public function __get($name)
     {
-        if (!array_key_exists($name, $this->attributes)) {
-            throw new \InvalidArgumentException("Property {$name} does not exist.");
+        $value = $this->attributes[$name] ?? null;
+
+        if (is_array($value) && $this->isAssoc($value)) {
+            return new self($value);
         }
 
-        return $this->attributes[$name];
+        return $value;
     }
 
     public function toArray(): array
