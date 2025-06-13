@@ -19,7 +19,11 @@ final readonly class ValueObject implements Jsonable
 
     public function __get($name)
     {
-        return $this->attributes[$name] ?? null;
+        if (!array_key_exists($name, $this->attributes)) {
+            throw new \InvalidArgumentException("Property {$name} does not exist.");
+        }
+
+        return $this->attributes[$name];
     }
 
     public function toArray(): array
@@ -29,6 +33,10 @@ final readonly class ValueObject implements Jsonable
     public function toJson($options = 0): string
     {
         return json_encode($this->attributes, $options);
+    }
+    public function jsonSerialize(): mixed
+    {
+        return $this->attributes;
     }
 
     public function __toString(): string
