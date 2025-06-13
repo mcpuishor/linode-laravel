@@ -21,6 +21,10 @@
    - Created LICENSE.md with MIT license
    - Made initial commit
 
+4. ✅ Added ValueObject and castable attributes
+   - Created ValueObject class for structured data handling
+   - Added AsValueObject castable attribute for Eloquent integration
+
 ## Next Steps
 
 1. Create GitHub repository
@@ -44,16 +48,23 @@
 linode-laravel/
 ├── config/
 │   └── linode.php
+├── examples/
+│   └── ModelWithValueObject.php
 ├── src/
+│   ├── Casts/
+│   │   └── AsValueObject.php
 │   ├── Exceptions/
 │   │   └── LinodeApiException.php
 │   ├── LinodeLaravelServiceProvider.php
-│   └── Transport.php
+│   ├── Transport.php
+│   └── ValueObject.php
 ├── tests/
 │   ├── Feature/
 │   │   ├── ConfigTest.php
 │   │   └── LinodeApiExceptionTest.php
 │   ├── Unit/
+│   │   ├── Casts/
+│   │   │   └── AsValueObjectTest.php
 │   │   └── TransportTest.php
 │   ├── Pest.php
 │   └── TestCase.php

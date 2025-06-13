@@ -6,10 +6,12 @@ use Illuminate\Contracts\Support\Jsonable;
 final readonly class ValueObject implements Jsonable
 {
     protected array $attributes;
+    protected bool $silentOnNonExistingAttributes;
 
-    public function __construct(array $data)
+    public function __construct(array $data, bool $silentOnNonExistingAttributes = false)
     {
         $this->attributes = $data;
+        $this->silentOnNonExistingAttributes = $silentOnNonExistingAttributes;
     }
 
     static public function fromArray(array $data): self
