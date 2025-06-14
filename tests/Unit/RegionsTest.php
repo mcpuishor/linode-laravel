@@ -80,4 +80,76 @@ describe('Regions', function () {
         expect(fn() => $linode->regions()->get($regionId))
             ->toThrow(LinodeApiException::class, 'Linode API request failed');
     });
+
+    it('can get availability for all regions', function () {
+        $availabilityData = [
+            [
+                'region' => 'us-east',
+                'plan_types' => [
+                    'standard',
+                    'dedicated',
+                    'premium'
+                ]
+            ],
+            [
+                'region' => 'eu-west',
+                'plan_types' => [
+                    'standard',
+                    'dedicated'
+                ]
+            ]
+        ];
+
+        Http::fake([
+            'https://api.linode.com/v4/regions/availability' => Http::response([
+                'data' => $availabilityData
+            ], 200),
+        ]);
+
+        $linode = app(LinodeClient::class);
+        $availability = $linode->regions()->availability();
+
+        expect($availability)->toBeCollection()
+            ->and($availability)->toHaveCount(2)
+            ->and($availability->first())->toBeInstanceOf(ValueObject::class)
+            ->and($availability->first()->toArray())->toHaveKeys([
+                'region', 'plan_types'
+            ])
+            ->and($availability->first()->region)->toBe('us-east')
+            ->and($availability->first()->plan_types)->toBeArray()
+            ->and($availability->first()->plan_types)->toContain('standard');
+    });
+
+    it('can get availability for a specific region', function () {
+        $regionId = 'us-east';
+        $availabilityData = [
+            [
+                'region' => 'us-east',
+                'plan_types' => [
+                    'standard',
+                    'dedicated',
+                    'premium'
+                ]
+            ]
+        ];
+
+        Http::fake([
+            "https://api.linode.com/v4/regions/{$regionId}/availability" => Http::response([
+                'data' => $availabilityData
+            ], 200),
+        ]);
+
+        $linode = app(LinodeClient::class);
+        $availability = $linode->regions()->availability($regionId);
+
+        expect($availability)->toBeCollection()
+            ->and($availability)->toHaveCount(1)
+            ->and($availability->first())->toBeInstanceOf(ValueObject::class)
+            ->and($availability->first()->toArray())->toHaveKeys([
+                'region', 'plan_types'
+            ])
+            ->and($availability->first()->region)->toBe('us-east')
+            ->and($availability->first()->plan_types)->toBeArray()
+            ->and($availability->first()->plan_types)->toContain('standard');
+    });
 });

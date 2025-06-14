@@ -27,4 +27,13 @@ class Regions
         $result = $this->transport->get($this->endpoint . '/' . $regionId);
         return ValueObject::fromArray($result['data'] ?? []);
     }
+
+    public function availability(?string $regionId = null)
+    {
+        $endpoint =  $this->endpoint . ($regionId ? '/' . $regionId  :  '') . '/availability';
+        $result = $this->transport->get($endpoint);
+        return collect($result['data'] ?? [])->map(function ($item) {
+            return ValueObject::fromArray($item);
+        });
+    }
 }
