@@ -31,14 +31,14 @@ class Database
 
     public function types(): Collection
     {
-        $result = $this->transport->get($this->endpoint . '/types');
+        $result = $this->transport->get('databases/types');
 
         return $this->mapToValueObjectsCollection($result['data'] ?? []);
     }
 
     public function type(string $typeId): ValueObject
     {
-        $result = $this->transport->get($this->endpoint . '/types/' . $typeId);
+        $result = $this->transport->get('databases/types/' . $typeId);
 
         return ValueObject::fromArray($result['data'] ?? []);
     }

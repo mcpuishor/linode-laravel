@@ -26,4 +26,9 @@ class LinodeClient
     {
         return new Database($this->transport);
     }
+
+    public function regions()
+    {
+        return new Regions($this->transport);
+    }
 }

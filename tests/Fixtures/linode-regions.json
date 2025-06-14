@@ -1,0 +1,48 @@
+[
+  {
+    "id": "us-east",
+    "label": "Newark, NJ",
+    "country": "us",
+    "capabilities": [
+      "Linodes",
+      "NodeBalancers",
+      "Block Storage",
+      "Object Storage",
+      "GPU Linodes",
+      "Kubernetes"
+    ],
+    "status": "ok",
+    "resolvers": {
+      "ipv4": [
+        "172.16.0.1",
+        "172.16.0.2"
+      ],
+      "ipv6": [
+        "2600:3c00::1",
+        "2600:3c00::2"
+      ]
+    }
+  },
+  {
+    "id": "eu-west",
+    "label": "London, UK",
+    "country": "uk",
+    "capabilities": [
+      "Linodes",
+      "NodeBalancers",
+      "Block Storage",
+      "Kubernetes"
+    ],
+    "status": "ok",
+    "resolvers": {
+      "ipv4": [
+        "172.17.0.1",
+        "172.17.0.2"
+      ],
+      "ipv6": [
+        "2600:3c01::1",
+        "2600:3c01::2"
+      ]
+    }
+  }
+]

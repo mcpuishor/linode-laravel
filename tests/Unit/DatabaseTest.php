@@ -334,7 +334,7 @@ describe('Database Types', function () {
         ];
 
         Http::fake([
-            'https://api.linode.com/v4/databases/instances/types' => Http::response([
+            'https://api.linode.com/v4/databases/types' => Http::response([
                 'data' => $typesData
             ], 200),
         ]);
@@ -350,7 +350,7 @@ describe('Database Types', function () {
             ]);
     });
 
-    it('can get a specific database type by id', function () {
+    it('can get a database type by id', function () {
         $typeId = 'g6-standard-1';
         $typeData = [
             'id' => 'g6-standard-1',
@@ -366,7 +366,7 @@ describe('Database Types', function () {
         ];
 
         Http::fake([
-            "https://api.linode.com/v4/databases/instances/types/{$typeId}" => Http::response([
+            "https://api.linode.com/v4/databases/types/{$typeId}" => Http::response([
                 'data' => $typeData
             ], 200),
         ]);

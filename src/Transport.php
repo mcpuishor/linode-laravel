@@ -131,7 +131,7 @@ class Transport
 
             if ($response->failed()) {
                 throw new LinodeApiException(
-                    $response->json('message', 'Linode API request failed'),
+                    $response->json('message', 'Linode API request failed ' . $response->status() . ' ' . $response),
                     $response
                 );
             }
