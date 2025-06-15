@@ -40,7 +40,7 @@ class Database
     {
         $result = $this->transport->get('databases/types/' . $typeId);
 
-        return ValueObject::fromArray($result['data'] ?? []);
+        return ValueObject::fromArray($result ?? []);
     }
 
     public function all(): Collection

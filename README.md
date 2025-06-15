@@ -32,7 +32,7 @@ LINODE_API_KEY=your-api-key
 
 ## Usage
 
-There are two ways to get the LinodeClient instance:
+There are three ways to get the LinodeClient instance:
 
 ```php
 // Method 1: Using the static make() method
@@ -40,13 +40,22 @@ $linode = \Mcpuishor\LinodeLaravel\LinodeClient::make();
 
 // Method 2: Resolving from the container
 $linode = app(\Mcpuishor\LinodeLaravel\LinodeClient::class);
+
+// Method 3: Using the static service methods directly
+// This leverages the __callStatic magic method
+$instances = \Mcpuishor\LinodeLaravel\LinodeClient::instances()->all();
+$databases = \Mcpuishor\LinodeLaravel\LinodeClient::databases()->mysql()->all();
+$regions = \Mcpuishor\LinodeLaravel\LinodeClient::regions()->all();
 ```
 
 ### Working with Instances
 
 ```php
-// Get all instances
+// Method 1: Using a LinodeClient instance
 $instances = $linode->instances()->all();
+
+// Method 2: Using the static method directly
+$instances = \Mcpuishor\LinodeLaravel\LinodeClient::instances()->all();
 
 // Get a specific instance by ID
 $instance = $linode->instances()->get(123);
@@ -72,8 +81,11 @@ $result = $linode->instances()->delete(123);
 ### Database Support
 
 ```php
-// Get all databases
+// Method 1: Using a LinodeClient instance
 $databases = $linode->databases()->all();
+
+// Method 2: Using the static method directly
+$databases = \Mcpuishor\LinodeLaravel\LinodeClient::databases()->all();
 
 // You must select a database engine (MySQL or PostgreSQL) before performing operations
 // Get a specific MySQL database by ID

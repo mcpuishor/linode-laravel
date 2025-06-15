@@ -5,6 +5,12 @@ class LinodeClient
 {
     protected Transport $transport;
 
+    public static function __callStatic(string $name, array $arguments)
+    {
+        return (new static(app(Transport::class)))
+            ->$name(...$arguments);
+    }
+
     public function __construct(Transport $transport)
     {
         $this->transport = $transport;
@@ -17,17 +23,17 @@ class LinodeClient
         );
     }
 
-    public function instances()
+    protected function instances()
     {
         return new Instances($this->transport);
     }
 
-    public function databases()
+    protected function databases()
     {
         return new Database($this->transport);
     }
 
-    public function regions()
+    protected function regions()
     {
         return new Regions($this->transport);
     }
