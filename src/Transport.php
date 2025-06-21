@@ -71,7 +71,7 @@ class Transport
      */
     public function post(string $endpoint, array $data = []): array
     {
-        return $this->request('post', $endpoint, ['json' => $data]);
+        return $this->request('post', $endpoint,$data ?  ['json' => $data] : null);
     }
 
     /**
@@ -122,12 +122,12 @@ class Transport
      * @throws RequestException
      * @throws LinodeApiException
      */
-    protected function request(string $method, string $endpoint, array $options = []): array
+    protected function request(string $method, string $endpoint, ?array $options = []): array
     {
         $url = $this->buildUrl($endpoint);
 
         try {
-            $response = $this->http->$method($url, $options[$method === 'get' ? 'query' : 'json'] ?? []);
+            $response = $this->http->$method($url, $options[$method === 'get' ? 'query' : 'json'] ?? null);
 
             if ($response->failed()) {
                 throw new LinodeApiException(
