@@ -43,6 +43,19 @@ class Database
         return ValueObject::fromArray($result ?? []);
     }
 
+    public function engines(): Collection
+    {
+        $result = $this->transport->get('databases/engines');
+
+        return $this->mapToValueObjectsCollection($result['data'] ?? []);
+    }
+
+    public function engine(string $engineId): ValueObject
+    {
+        $result = $this->transport->get('databases/engines/' . $engineId);
+        return ValueObject::fromArray($result ?? []);
+    }
+
     public function all(): Collection
     {
         $result = $this->transport->get($this->endpoint);
@@ -126,11 +139,11 @@ class Database
         return $this->getCredentials($instanceId);
     }
 
-    public function ssl(): ValueObject
+    public function ssl(int $instanceId): ValueObject
     {
         return $this->engineSelected
             ? ValueObject::fromArray(
-                $this->transport->get($this->endpoint . '/ssl')
+                $this->transport->get("/databases/mysql/instances/{$instanceId}/ssl")
             )
             : throw new \Exception('Database engine not selected');
     }

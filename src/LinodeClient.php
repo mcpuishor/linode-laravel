@@ -11,6 +11,10 @@ class LinodeClient
             ->$name(...$arguments);
     }
 
+    public function __call(string $name, array $arguments)
+    {
+        return $this->$name(...$arguments);
+    }
     public function __construct(Transport $transport)
     {
         $this->transport = $transport;
